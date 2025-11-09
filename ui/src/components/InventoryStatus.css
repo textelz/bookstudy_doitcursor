@@ -1,0 +1,110 @@
+.inventory-status {
+  background-color: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 1.5rem;
+}
+
+.inventory-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #333;
+  margin: 0 0 1.5rem 0;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #e0e0e0;
+  text-align: center;
+}
+
+.inventory-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.inventory-card {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1rem;
+  background-color: #f9f9f9;
+  border-radius: 4px;
+  border: 1px solid #e0e0e0;
+}
+
+.inventory-product-name {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #333;
+  margin: 0;
+}
+
+.inventory-stock-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.inventory-stock-count {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #2196F3;
+}
+
+.inventory-status-badge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.status-normal {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+}
+
+.status-warning {
+  background-color: #fff3e0;
+  color: #e65100;
+}
+
+.status-out {
+  background-color: #ffebee;
+  color: #c62828;
+}
+
+.inventory-controls {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+}
+
+.stock-button {
+  width: 36px;
+  height: 36px;
+  background-color: #2196F3;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 1.2rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s;
+  padding: 0;
+}
+
+.stock-button:hover:not(:disabled) {
+  background-color: #1976D2;
+}
+
+.stock-button:active:not(:disabled) {
+  background-color: #1565C0;
+}
+
+.stock-button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+

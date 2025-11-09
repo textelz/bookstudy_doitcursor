@@ -1,47 +1,33 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import ProductCard from '../components/ProductCard'
 import Cart from '../components/Cart'
+import { menuAPI, orderAPI } from '../services/api'
 import './OrderPage.css'
 
-// 임시 상품 데이터
-const initialProducts = [
-  {
-    id: 1,
-    name: '아메리카노(ICE)',
-    price: 4000,
-    description: '시원하고 깔끔한 아이스 아메리카노',
-    imageUrl: '/images/americano-ice.jpg',
-    options: [
-      { id: 1, name: '샷 추가', price: 500 },
-      { id: 2, name: '시럽 추가', price: 0 }
-    ]
-  },
-  {
-    id: 2,
-    name: '아메리카노(HOT)',
-    price: 4000,
-    description: '따뜻하고 진한 핫 아메리카노',
-    imageUrl: '/images/americano-hot.jpg',
-    options: [
-      { id: 1, name: '샷 추가', price: 500 },
-      { id: 2, name: '시럽 추가', price: 0 }
-    ]
-  },
-  {
-    id: 3,
-    name: '카페라떼',
-    price: 5000,
-    description: '부드럽고 고소한 카페라떼',
-    imageUrl: '/images/caffe-latte.jpg',
-    options: [
-      { id: 1, name: '샷 추가', price: 500 },
-      { id: 2, name: '시럽 추가', price: 0 }
-    ]
-  }
-]
-
 function OrderPage() {
+  const [products, setProducts] = useState([])
   const [cartItems, setCartItems] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
+
+  // 메뉴 목록 로드
+  useEffect(() => {
+    const loadMenus = async () => {
+      try {
+        setLoading(true)
+        const response = await menuAPI.getMenus()
+        setProducts(response.data.menus)
+        setError(null)
+      } catch (err) {
+        console.error('메뉴 로드 실패:', err)
+        setError('메뉴를 불러오는데 실패했습니다.')
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    loadMenus()
+  }, [])
 
   const findCartItem = (product, selectedOptions) => {
     return cartItems.find(item => {
@@ -104,15 +90,58 @@ function OrderPage() {
     }
   }
 
-  const handleOrder = () => {
+  const handleOrder = async () => {
     if (cartItems.length === 0) {
       alert('장바구니가 비어있습니다.')
       return
     }
 
-    // 주문 처리 (나중에 서버 연동)
-    alert('주문이 접수되었습니다!')
-    setCartItems([])
+    try {
+      // 주문 데이터 생성
+      const totalPrice = cartItems.reduce((sum, item) => sum + (item.totalPrice * item.quantity), 0)
+      const orderItems = cartItems.map(item => ({
+        menu_id: item.productId,
+        quantity: item.quantity,
+        option_ids: item.selectedOptions.map(opt => opt.id),
+        item_price: item.totalPrice
+      }))
+
+      // API로 주문 생성
+      const response = await orderAPI.createOrder({
+        items: orderItems,
+        total_price: totalPrice
+      })
+
+      // 관리자 화면에 주문 추가를 알리는 커스텀 이벤트 발생
+      window.dispatchEvent(new CustomEvent('orderAdded'))
+
+      alert('주문이 접수되었습니다!')
+      setCartItems([])
+    } catch (err) {
+      console.error('주문 실패:', err)
+      alert(err.message || '주문에 실패했습니다.')
+    }
+  }
+
+  if (loading) {
+    return (
+      <div className="order-page">
+        <div style={{ textAlign: 'center', padding: '2rem' }}>
+          <p>메뉴를 불러오는 중...</p>
+        </div>
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="order-page">
+        <div style={{ textAlign: 'center', padding: '2rem', color: 'red' }}>
+          <p>{error}</p>
+          <button onClick={() => window.location.reload()}>다시 시도</button>
+        </div>
+      </div>
+    )
   }
 
   return (
@@ -120,10 +149,17 @@ function OrderPage() {
       <div className="products-section">
         <h2 className="section-title">메뉴</h2>
         <div className="products-grid">
-          {initialProducts.map(product => (
+          {products.map(product => (
             <ProductCard
               key={product.id}
-              product={product}
+              product={{
+                id: product.id,
+                name: product.name,
+                price: product.price,
+                description: product.description || '',
+                imageUrl: product.image_url || '',
+                options: product.options || []
+              }}
               onAddToCart={handleAddToCart}
             />
           ))}

@@ -44,8 +44,11 @@ function Cart({ cartItems, onOrder, onQuantityChange }) {
       <div className="cart-content">
         <div className="cart-left">
           <div className="cart-items">
-            {cartItems.map((item, index) => (
-              <div key={index} className="cart-item">
+            {cartItems.map((item, index) => {
+              // 고유한 key 생성 (productId + 옵션 조합)
+              const uniqueKey = `${item.productId}-${item.selectedOptions.map(opt => opt.id).sort().join('-')}-${index}`
+              return (
+              <div key={uniqueKey} className="cart-item">
                 <div className="cart-item-info">
                   <span className="cart-item-name">{formatItemName(item)}</span>
                 </div>
@@ -66,7 +69,8 @@ function Cart({ cartItems, onOrder, onQuantityChange }) {
                 </div>
                 <span className="cart-item-price">{getItemTotalPrice(item).toLocaleString()}원</span>
               </div>
-            ))}
+              )
+            })}
           </div>
         </div>
         <div className="cart-right">

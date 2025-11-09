@@ -3,6 +3,7 @@ import './ProductCard.css'
 
 function ProductCard({ product, onAddToCart }) {
   const [selectedOptions, setSelectedOptions] = useState([])
+  const [imageError, setImageError] = useState(false)
 
   const handleOptionChange = (optionId) => {
     setSelectedOptions(prev => {
@@ -33,7 +34,17 @@ function ProductCard({ product, onAddToCart }) {
   return (
     <div className="product-card">
       <div className="product-image">
-        <img src={product.imageUrl} alt={product.name} />
+        {imageError ? (
+          <div className="image-placeholder">
+            <span>이미지 없음</span>
+          </div>
+        ) : (
+          <img 
+            src={product.imageUrl} 
+            alt={product.name}
+            onError={() => setImageError(true)}
+          />
+        )}
       </div>
       <div className="product-info">
         <h3 className="product-name">{product.name}</h3>
