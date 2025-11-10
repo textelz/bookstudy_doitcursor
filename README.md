@@ -40,6 +40,14 @@ bookstudy_doitcursor/
 
 자세한 내용은 `ui/README.md`를 참고하세요.
 
+### 배포 시 주의 사항
+- Vite 환경 변수는 `VITE_` 접두어가 있는 값만 프런트엔드 코드에서 접근 가능합니다.
+- Render 등 배포 환경에서 **`VITE_API_URL`** 값을 반드시 설정해야 백엔드 API와 통신할 수 있습니다.
+  ```env
+  VITE_API_URL=https://your-backend-service.onrender.com
+  ```
+  (로컬 개발 시에는 UI 폴더의 `.env` 파일에 동일한 값을 추가하면 됩니다.)
+
 ## 백엔드 실행 방법
 
 ### 사전 요구사항
