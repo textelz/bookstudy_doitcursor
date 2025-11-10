@@ -14,6 +14,7 @@ DB_PORT=5432
 DB_NAME=cozy_coffee
 DB_USER=postgres
 DB_PASSWORD=your_password_here
+DB_SSL=false
 
 # 환경 설정
 NODE_ENV=development
@@ -48,6 +49,7 @@ CREATE DATABASE cozy_coffee;
 - `DB_PASSWORD`: PostgreSQL 비밀번호
 - `DB_HOST`: 데이터베이스 호스트 (기본: `localhost`)
 - `DB_PORT`: 데이터베이스 포트 (기본: `5432`)
+- `DB_SSL`: Render와 같이 SSL이 필요한 환경에서는 `true`로 설정 (기본은 `false`)
 
 ### 3. 연결 테스트
 
@@ -89,6 +91,7 @@ npm run dev
 
 4. **.env 파일의 정보가 올바른지 확인**
    - DB_NAME, DB_USER, DB_PASSWORD가 정확한지 확인
+   - Render 등의 클라우드 DB를 사용하는 경우 `DB_SSL=true`로 설정되어 있는지 확인
 
 5. **포트가 올바른지 확인**
    - 기본 PostgreSQL 포트는 5432입니다

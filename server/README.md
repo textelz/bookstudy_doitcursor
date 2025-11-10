@@ -19,10 +19,13 @@ DB_PORT=5432
 DB_NAME=cozy_coffee
 DB_USER=postgres
 DB_PASSWORD=your_password_here
+DB_SSL=false
 NODE_ENV=development
 ```
 
 자세한 설정 방법은 `ENV_SETUP.md` 파일을 참고하세요.
+
+> Render와 같은 클라우드 PostgreSQL을 사용할 경우 `DB_SSL=true`로 설정해야 합니다.
 
 ## 데이터베이스 설정
 

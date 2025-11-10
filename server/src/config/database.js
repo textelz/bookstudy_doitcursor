@@ -5,17 +5,33 @@ dotenv.config()
 
 const { Pool } = pg
 
-// PostgreSQL 연결 풀 생성
-const pool = new Pool({
-  host: process.env.DB_HOST || 'localhost',
-  port: parseInt(process.env.DB_PORT) || 5432,
-  database: process.env.DB_NAME || 'cozy_coffee',
-  user: process.env.DB_USER || 'postgres',
-  password: process.env.DB_PASSWORD || '',
+const shouldEnableSSL = (process.env.DB_SSL || 'false').toLowerCase() === 'true'
+
+const baseConfig = {
   max: 20, // 최대 연결 수
   idleTimeoutMillis: 30000,
   connectionTimeoutMillis: 2000,
-})
+}
+
+if (process.env.DATABASE_URL) {
+  baseConfig.connectionString = process.env.DATABASE_URL
+  if (shouldEnableSSL) {
+    baseConfig.ssl = { rejectUnauthorized: false }
+  }
+} else {
+  baseConfig.host = process.env.DB_HOST || 'localhost'
+  baseConfig.port = parseInt(process.env.DB_PORT, 10) || 5432
+  baseConfig.database = process.env.DB_NAME || 'cozy_coffee'
+  baseConfig.user = process.env.DB_USER || 'postgres'
+  baseConfig.password = process.env.DB_PASSWORD || ''
+
+  if (shouldEnableSSL) {
+    baseConfig.ssl = { rejectUnauthorized: false }
+  }
+}
+
+// PostgreSQL 연결 풀 생성
+const pool = new Pool(baseConfig)
 
 // 연결 이벤트 핸들러
 pool.on('connect', () => {
